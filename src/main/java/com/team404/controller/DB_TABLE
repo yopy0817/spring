@@ -1,0 +1,121 @@
+create table freeboard(
+    bno number(10,0), 
+    title varchar(200) not null,
+    content varchar2(2000) not null,
+    writer varchar2(50) not null,
+    regdate date DEFAULT sysdate,
+    updatedate date DEFAULT sysdate
+);
+alter table freeboard add CONSTRAINT freeboard_pk PRIMARY key (bno);
+create SEQUENCE freeboard_seq;
+
+
+/////페이징 쿼리/////
+select * 
+from (select rownum as rn, bno, writer, title, content, regdate, updatedate
+      from (select * 
+            from freeboard 
+            order by bno desc
+            )
+) where rn > 0 and rn <= 10;
+/////게시글 목록시 페이징과 함께 댓글개수 조인 쿼리/////
+select * 
+from(
+    select rownum as rn,
+           bno,
+           title,
+           content, 
+           writer,
+           regdate,
+           updatedate,
+           total
+           from (select a.bno,
+                        title,
+                        content,
+                        writer,
+                        regdate,
+                        updatedate,
+                        NVL(total, 0) as total
+                        from freeboard a LEFT OUTER JOIN (select count(*) as total, bno from freereply group by bno) b on a.bno = b.bno
+                        where writer like '%ㅋ%'
+                        order by bno desc
+                )        
+) where rn > 0 and rn <= 10;
+
+
+
+/////댓글/////
+create table freereply (
+
+    rno number(10,0),
+    bno number(10,0),
+    reply varchar2(1000),
+    replyId varchar2(50),
+    replyPw varchar2(50),
+    replydate date default sysdate,
+    updatedate date default sysdate
+);
+create SEQUENCE freereply_seq;
+alter table freereply add CONSTRAINT freereply_pk PRIMARY KEY (rno);
+
+
+/////댓글 더보기 처리//////
+//0. getList메서드는(cri, 게시글번호)매개변수로 받는다
+//1. page쿼리로 변경
+//2. 화면getList함수의 더보기 보이기 조건생성
+//3. 화면getList함수의 str을 전역변수로 선언
+//4. 더보기 클릭시 page번호를 getList함수로 전달
+
+
+/////회원가입/////
+create table users(
+    userId varchar2(50) not null,
+    userPw varchar(50) not null,
+    userName varchar2(50) not null,
+    userPhone1 varchar2(50) not null,
+    userPhone2 varchar2(50) not null,
+    userEmail1 varchar2(50) not null,
+    userEmail2 varchar2(50) not null,
+    addrZipNum varchar2(50) not null,
+    addrBasic varchar2(300) not null,
+    addrDetail varchar2(300) not null,
+    regDate date default sysdate
+); 
+alter table users add constraint userId_pk primary key (userId);
+
+
+//////sns게시판//////
+create table snsboard(
+    bno number(10,0) not null,
+    writer varchar2(50) not null,
+    uploadpath varchar2(100) not null,
+    fileloca varchar2(100) not null,
+    fileName varchar2(50) not null,
+    filerealName varchar2(50) not null,
+    content varchar2(2000),
+    regdate date default sysdate
+);
+alter table snsboard add constraint snsboard_bno_pk primary key (bno);
+create SEQUENCE snsboard_seq;
+
+
+/////////메뉴중...///////////
+create table menu (
+    dep1_menu_no number(10, 0 ) not null, --메뉴번호   
+    dep1_name varchar2(50) not null, --부모메뉴이름
+    parent_no number(10, 0), --부모메뉴번호
+    seq number(10, 0) default 0, --순서
+    dep2_name varchar2(50), --하위메뉴이름
+    menu_comment varchar2(200), 
+    regdate date default sysdate
+);
+alter table menu add CONSTRAINT menu_pk PRIMARY KEY (dep1_menu_no, seq);
+
+insert into menu(bno,dep1_menu_no, dep1_name, parent_no, seq, dep2_name)
+values (menu_seq.nextval, 
+        1,
+        'MAIN',
+        1,
+        (select NVL(MAX(seq), 0) + 1 from menu where dep1_menu_no = 1),
+        null
+        );

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <!-- 반드시 mapper인터페이스와 동일하게 선언  -->
+  <mapper namespace="com.team404.frboard.mapper.FreeBoardMapper">
+  	
+	<!-- mapper인터페이스의 추상메서드명 -->
+  	<!-- CDATA는 부등호를 사용하기 위한 선언 --> 
+  	<insert id="regist">
+  		<![CDATA[
+  		  	insert into freeboard( title, content, writer)
+  		  	values( #{title}, #{content}, #{writer})
+  		]]>  		
+  	</insert>
+
+	<!-- mysql에서 rownum은 @rownum := @rownum + 1 로 얻음, 그리고 서브쿼리절에서 (select @rownum:=0) as rn -->
+	<select id="getList" resultType="FreeBoardVO">
+		<![CDATA[
+		select * 
+		from(select @rownum := @rownum+1 as rn,
+           	 bno,
+			 title,
+           	 content, 
+           	 writer,
+           	 regdate,
+           	 updatedate,
+           	 total
+           	 from (select a.bno,
+                          title,
+                          content,
+                          writer,
+                          regdate,
+                          updatedate,
+                          IFNULL(total, 0) as total
+                   from freeboard a LEFT OUTER JOIN (select count(*) as total, bno from freereply group by bno) b on a.bno = b.bno
+				   where
+		]]>
+				   <if test="searchType == 'title' ">title like '%'||#{searchName}||'%'</if>
+				   <if test="searchType == 'content' ">content like '%'||#{searchName}||'%'</if>
+				   <if test="searchType == 'writer' ">writer like '%'||#{searchName}||'%'</if>
+			       <if test="searchType == 'titcont' ">title like '%'||#{searchName}||'%' or content like '%'||#{searchName}||'%'</if>							
+				   <if test="searchType == null or searchType == '' ">1=1</if>
+		<![CDATA[	             
+		           order by bno desc
+		           ) as sub1 , (select @rownum:=0) as rn
+		) as sub2
+		where rn > (#{pageNum}-1) * #{amount} and rn <= (#{pageNum}* #{amount})	
+		]]>
+	</select>
+	
+	
+	<select id="getTotal" resultType="int">
+		select count(*) as total from freeboard 
+		where
+		<if test="searchType == 'title' ">title like '%'||#{searchName}||'%'</if>
+		<if test="searchType == 'content' ">content like '%'||#{searchName}||'%'</if>
+		<if test="searchType == 'writer' ">writer like '%'||#{searchName}||'%'</if>
+		<if test="searchType == 'titcont' ">title like '%'||#{searchName}||'%' or content like '%'||#{searchName}||'%'</if>
+		<if test="searchType == null or searchType == '' ">1=1</if>
+	</select>
+	
+
+	<select id="content" resultType="FreeBoardVO">
+		select * from freeboard where bno = #{bno}
+	</select>
+	
+	<update id="update">
+		update freeboard 
+			set title = #{title}, 
+			content = #{content}, 
+			writer = #{writer}, 
+			updatedate = CURRENT_TIMESTAMP
+		where bno = #{bno}
+		
+	</update>
+	
+	<delete id="delete">
+		delete from freeboard where bno = #{bno}
+	</delete>
+	
+  </mapper>
+
+    
