@@ -35,7 +35,9 @@
                     <!-- 검색의 name, value추가, form의 id추가 -->
                     <form action="freeList" method="get" name="searchForm" id="searchForm">
                     <div class="search-wrap" >
-                       <span>총 ${pageVO.total }게시글</span>
+                    
+                    	<span>총 ${pageVO.total }게시글</span>
+
                        <button type="button" class="btn btn-info search-btn" id="searchBtn">검색</button>
                        <input type="text" class="form-control search-input" value="${pageVO.cri.searchName }" name="searchName" id="searchName">
                        <select class="form-control search-select" name="searchType">
@@ -44,7 +46,16 @@
                             <option value="writer" ${pageVO.cri.searchType eq 'writer' ? 'selected' : '' }>작성자</option>
                             <option value="titcont" ${pageVO.cri.searchType eq 'titcont' ? 'selected' : '' }>제목+내용</option>
                        </select>
+                       
+                        <select class="form-control search-select" name="amount" style="width: 100px;">
+                       		<option value="10" ${pageVO.cri.amount eq 10 ? 'selected' : '' }>10개씩보기</option>
+                       		<option value="20" ${pageVO.cri.amount eq 20 ? 'selected' : '' }>20개씩보기</option>
+                       		<option value="50" ${pageVO.cri.amount eq 50 ? 'selected' : '' }>50개씩보기</option>
+                       		<option value="100"${pageVO.cri.amount eq 100 ? 'selected': '' }>100개씩보기</option>
+                       	</select>
                     </div>
+                    
+                    
                     <!-- 검색의 클릭시 pageNum은 1부터 시작하게 함 -->
                     <input type="hidden" name="pageNum"  value="1">
                     <input type="hidden" name="amount"  value="${pageVO.cri.amount }">
