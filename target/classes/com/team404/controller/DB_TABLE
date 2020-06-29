@@ -106,7 +106,7 @@ create table menu (
     parent_no number(10, 0), --부모메뉴번호
     seq number(10, 0) default 0, --순서
     dep2_name varchar2(50), --하위메뉴이름
-    menu_comment varchar2(200), 
+    menu_url varchar2(200), 
     regdate date default sysdate
 );
 alter table menu add CONSTRAINT menu_pk PRIMARY KEY (dep1_menu_no, seq);

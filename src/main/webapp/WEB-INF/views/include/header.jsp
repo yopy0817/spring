@@ -18,37 +18,12 @@
 
                         <div class="collapse navbar-collapse" id="myNavbar">
                             <ul class="nav navbar-nav">
-                                <li class="active"><a href="${pageContext.request.contextPath }">Main</a></li>
-                                <li><a href="${pageContext.request.contextPath }/freeBoard/freeList">자유게시판</a></li>
-                                <li><a href="${pageContext.request.contextPath }/snsBoard/snsList">페이스북</a></li>
-                            	<!-- 1중드롭다운(개발테스트중) -->
-                            	<%-- 
-                            	<li class="dropdown">
-                            	    <a class="dropdown-toggle" data-toggle="dropdown" href="#">언어</a>
-                                    <ul class="dropdown-menu">
-                                        <li><a href="${pageContext.request.contextPath }/lecture/100/100">Java</a></li>
-                                        <li><a href="${pageContext.request.contextPath }/lecture/200/200">JavaScript</a></li>
-                                    	<li><a href="${pageContext.request.contextPath }/lecture/300/300">테스트</a></li>
-                                    </ul>
-                            	</li>
-                            	--%>
-                            	
-                            	
-                            	
-                            	<%-- 
-                            	<li class="dropdown drophover" ><!--drophover클래스를 주면 호버기능이 들어갑니다-->
-                                    <a class="dropdown-toggle" id="dropdownMenu1" href="">강의</a>
-                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                                        <li>
-                                        	<a href="${pageContext.request.contextPath }/lecture/java">JAVA</a>
-                                        	<a href="${pageContext.request.contextPath }/lecture/java">JAVA</a>
-                                        </li>
-                                        <li>
-                                        	<a href="${pageContext.request.contextPath }/lecture/java">C언어</a>
-                                        </li>
-                                    </ul>
-                                </li>
-                            	--%>
+                                <!-- 스프링 하드코딩 메뉴 -->
+                                <%-- 
+                                <li class="active"><a href="${pageContext.request.contextPath }">메인</a></li>
+                                <li><a href="${pageContext.request.contextPath }/freeBoard/freeList">커뮤니티</a></li>
+                                <li><a href="${pageContext.request.contextPath }/snsBoard/snsList">SNS</a></li>
+                            	 --%>
                             </ul>
                             <ul class="nav navbar-nav navbar-right">
                                 <!--드롭다운으로 로그인 추가 -->
@@ -88,3 +63,28 @@
             </div>
         </div>
     </header>
+    
+    <script>
+    	//스프링 메뉴처리
+    	var ul = document.querySelector("#myNavbar ul");
+    	var str = "";
+    	fetch("${pageContext.request.contextPath}/menuList").then(function(response) {
+    		return response.json();
+    	}).then(function(data) {
+    		console.log(data)
+			
+    		for(var i = 0; i < data.length; i++) {
+    			str += "<li class='active'><a href='${pageContext.request.contextPath }"+data[i].menu_url +"'>"+ data[i].dep1_name +"</a></li>"
+ 	   		}
+    		ul.innerHTML = str;
+    		
+   	}) 
+    </script>
+    
+    
+    
+    
+    
+    
+    
+    

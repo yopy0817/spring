@@ -14,15 +14,15 @@
     <!--개인 디자인 추가-->
     <link href="${pageContext.request.contextPath }/resources/css/style.css" rel="stylesheet">
     <script src="${pageContext.request.contextPath }/resources/js/bootstrap.js"></script>
-	
-	
+
 </head>
 <body>
 
 	<%@ include file="../include/header.jsp" %>
-   	<!--게시판-->
+	
+	<!--게시판-->
     <section>
-        <div class="container">
+        <div class="container-fluid">
             <div class="row">
                 <!--lg에서 9그리드, xs에서 전체그리드-->   
                 <div class="col-lg-9 col-xs-12 board-table">

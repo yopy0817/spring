@@ -10,6 +10,7 @@
   <!-- 타입 별칭은 자바 타입에 대한 짧은 이름이다. 오직 XML 설정에서만 사용되며, 타이핑을 줄이기 위해 존재한다. -->
   <configuration>
   	<typeAliases>
+  		<typeAlias type="com.team404.command.MenuVO" alias="MenuVO"/>
   		<typeAlias type="com.team404.command.FreeBoardVO" alias="FreeBoardVO"/>
   		<typeAlias type="com.team404.command.ReplyVO" alias="ReplyVO"/>
   		<typeAlias type="com.team404.command.UserVO" alias="UserVO"/>
